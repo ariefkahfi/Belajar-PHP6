@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Insert</title>
+</head>
+<body>
+    <form name="insertForm" method="POST">
+        <table>
+            <tr>
+                <td>Nama</td>
+                <td><input type="text" name="nama" placeholder="Nama anda"/></td>
+            </tr>
+            <tr>
+                <td>Alamat</td>
+                <td><input type="text" name="alamat" placeholder="Alamat anda"/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" onClick="return insertData()" value="Submit data" style="width:100%;"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="ajax-response"></div>
+
+</body>
+    <script>
+
+        function insertData(){
+            var nama = document.insertForm.nama.value;
+            var alamat = document.insertForm.alamat.value;
+
+            if(nama === '' || nama === undefined || alamat === '' || alamat === undefined){
+               alert('masih ada form yang kosong');
+               document.getElementById('ajax-response').innerHTML = "";
+
+            }else{
+               ajaxInsert(nama,alamat);
+            }
+            console.log(nama + "" + alamat);
+            return false;
+        }
+
+        function clearFields(){
+            document.insertForm.nama.value = "";
+            document.insertForm.alamat.value ="";
+        }
+
+        function ajaxInsert(nama,alamat){
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.open('POST','http://localhost/BelajarPDOdiPHP1/back-end/Insert.php',true);
+            xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+
+            xhttp.onreadystatechange = function (){
+               if(this.readyState === 4 && this.status === 200){
+                document.getElementById('ajax-response').innerHTML = this.responseText;
+                clearFields();
+                }
+            };
+            xhttp.send('nama='+nama+"&alamat="+alamat);
+        }
+    </script>
+</html>

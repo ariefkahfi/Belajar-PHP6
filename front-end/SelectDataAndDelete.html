@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Data User</title>
+</head>
+<body>
+    <table border="2" id="list">
+        <tr>
+            <td>Id</td>
+            <td>Nama</td>
+        </tr>
+    </table><br/>
+
+    <form name="deleteForm">
+        <table>
+            <tr>
+                <td>Id</td>
+                <td><input type="number" name="id"/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" onClick="return validateDelete()" style="width: 100%;" value="Delete Data"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+    <script>
+
+
+        function validateDelete(){
+            var id = document.deleteForm.id.value ;
+            if(id === undefined || id === ''){
+              alert('Masih ada form kosong');
+              return false;
+            }else{
+              deleteData(id);
+            }
+        }
+
+        function deleteData(id){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','http://localhost/BelajarPDOdiPHP1/back-end/Delete.php?id='+id,true);
+            xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+            xhr.send();
+        }
+
+        ajaxLoadData();
+
+
+        function filterDataFromJson(json){
+            var table = document.getElementById('list');
+
+
+
+            for(var i=0; i<json.length; i++){
+               var newTr = document.createElement('tr');
+
+               var props = [json[i].id,json[i].nama];
+
+               for(var j =0; j<props.length; j++){
+                  var newTd = document.createElement('td');
+                  newTd.innerHTML = props[j];
+
+                  newTr.appendChild(newTd);
+               }
+                table.appendChild(newTr);
+            }
+        }
+
+        function ajaxLoadData(){
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET','http://localhost/BelajarPDOdiPHP1/back-end/Select.php',true);
+
+            xhr.onreadystatechange = function (){
+                if(this.readyState === 4 && this.status === 200){
+                   var responseText = this.responseText;
+
+                   var json = JSON.parse(responseText);
+
+                   var personData = json.person;
+
+                   filterDataFromJson(personData);
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</html>
